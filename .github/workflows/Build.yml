@@ -1,0 +1,29 @@
+name: 'Build and publish'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Quack:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          git clone https://github.com/urho3d/Urho3D
+          
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '14'
+          
+      - run: |
+          cd Urho3D
+          ./gradlew.bat
+      
+      - name: 'Uploading artifacts'
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries-x64
+          path: ./Urho3D
+          retention-days: 5
