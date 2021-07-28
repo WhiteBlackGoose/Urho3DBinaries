@@ -1,29 +1,28 @@
-name: 'Build and publish'
+name: Build and publish
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  Quack:
+  BuildAndPublish:
     runs-on: windows-latest
     steps:
-      - run: |
+      - name: 'Clone the Urho 3D repo'
+        run: |
           git clone https://github.com/urho3d/Urho3D
-          
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '14'
-          
-      - run: |
+
+      - name: 'Run cmake against the root of the repo'
+        run: |
           cd Urho3D
-          ./gradlew.bat
+          cmake -S . -B build
+          cmake --build build
       
-      - name: 'Uploading artifacts'
+      - name: 'Upload resulted binaries'
         uses: actions/upload-artifact@v2
         with:
           name: binaries-x64
-          path: ./Urho3D
+          path: ./Urho3D/build
           retention-days: 5
